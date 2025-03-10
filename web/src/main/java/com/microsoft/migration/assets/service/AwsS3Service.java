@@ -1,7 +1,9 @@
 package com.microsoft.migration.assets.service;
 
+import com.microsoft.migration.assets.model.ImageMetadata;
 import com.microsoft.migration.assets.model.ImageProcessingMessage;
 import com.microsoft.migration.assets.model.S3Object;
+import com.microsoft.migration.assets.repository.ImageMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
@@ -26,6 +29,7 @@ public class AwsS3Service implements StorageService {
 
     private final S3Client s3Client;
     private final RabbitTemplate rabbitTemplate;
+    private final ImageMetadataRepository imageMetadataRepository;
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
@@ -51,7 +55,7 @@ public class AwsS3Service implements StorageService {
 
     @Override
     public void uploadObject(MultipartFile file) throws IOException {
-        String key = file.getOriginalFilename();
+        String key = generateKey(file.getOriginalFilename());
         
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -69,6 +73,17 @@ public class AwsS3Service implements StorageService {
             file.getSize()
         );
         rabbitTemplate.convertAndSend(QUEUE_NAME, message);
+
+        // Create and save metadata to database
+        ImageMetadata metadata = new ImageMetadata();
+        metadata.setId(UUID.randomUUID().toString());
+        metadata.setFilename(file.getOriginalFilename());
+        metadata.setContentType(file.getContentType());
+        metadata.setSize(file.getSize());
+        metadata.setS3Key(key);
+        metadata.setS3Url(generateUrl(key));
+        
+        imageMetadataRepository.save(metadata);
     }
 
     @Override
@@ -101,6 +116,12 @@ public class AwsS3Service implements StorageService {
         } catch (Exception e) {
             // Ignore if thumbnail doesn't exist
         }
+
+        // Delete metadata from database
+        imageMetadataRepository.findAll().stream()
+                .filter(metadata -> metadata.getS3Key().equals(key))
+                .findFirst()
+                .ifPresent(metadata -> imageMetadataRepository.delete(metadata));
     }
 
     @Override
@@ -115,7 +136,14 @@ public class AwsS3Service implements StorageService {
     }
     
     private String generateUrl(String key) {
-        // Generate a URL for the object (simplified, not a presigned URL)
-        return "/s3/view/" + key;
+        GetUrlRequest request = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        return s3Client.utilities().getUrl(request).toString();
+    }
+
+    private String generateKey(String filename) {
+        return UUID.randomUUID().toString() + "-" + filename;
     }
 }
