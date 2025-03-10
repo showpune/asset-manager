@@ -32,4 +32,20 @@ public interface StorageService {
      * Delete object from storage by key
      */
     void deleteObject(String key) throws IOException;
+
+    /**
+     * Get the storage type (s3 or local)
+     */
+    String getStorageType();
+
+    /**
+     * Get the thumbnail key for a given key
+     */
+    default String getThumbnailKey(String key) {
+        int dotIndex = key.lastIndexOf('.');
+        if (dotIndex > 0) {
+            return key.substring(0, dotIndex) + "_thumbnail" + key.substring(dotIndex);
+        }
+        return key + "_thumbnail";
+    }
 }

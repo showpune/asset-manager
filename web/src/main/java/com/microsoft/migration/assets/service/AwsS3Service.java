@@ -1,7 +1,9 @@
 package com.microsoft.migration.assets.service;
 
+import com.microsoft.migration.assets.model.ImageProcessingMessage;
 import com.microsoft.migration.assets.model.S3Object;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,15 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
+
 @Service
 @RequiredArgsConstructor
 @Profile("!dev") // Active when not in dev profile
 public class AwsS3Service implements StorageService {
 
     private final S3Client s3Client;
+    private final RabbitTemplate rabbitTemplate;
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
@@ -55,6 +60,15 @@ public class AwsS3Service implements StorageService {
                 .build();
         
         s3Client.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+
+        // Send message to queue for thumbnail generation
+        ImageProcessingMessage message = new ImageProcessingMessage(
+            key,
+            file.getContentType(),
+            getStorageType(),
+            file.getSize()
+        );
+        rabbitTemplate.convertAndSend(QUEUE_NAME, message);
     }
 
     @Override
@@ -69,12 +83,29 @@ public class AwsS3Service implements StorageService {
 
     @Override
     public void deleteObject(String key) throws IOException {
+        // Delete both original and thumbnail if it exists
         DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build();
         
         s3Client.deleteObject(request);
+
+        try {
+            // Try to delete thumbnail if it exists
+            DeleteObjectRequest thumbnailRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(getThumbnailKey(key))
+                    .build();
+            s3Client.deleteObject(thumbnailRequest);
+        } catch (Exception e) {
+            // Ignore if thumbnail doesn't exist
+        }
+    }
+
+    @Override
+    public String getStorageType() {
+        return "s3";
     }
 
     private String extractFilename(String key) {

@@ -1,8 +1,10 @@
 package com.microsoft.migration.assets.service;
 
+import com.microsoft.migration.assets.model.ImageProcessingMessage;
 import com.microsoft.migration.assets.model.S3Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
+
 @Service
 @Profile("dev") // Only active when dev profile is active
 public class LocalFileStorageService implements StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalFileStorageService.class);
     
+    private final RabbitTemplate rabbitTemplate;
+    
     @Value("${local.storage.directory:storage}")
     private String storageDirectory;
     
     private Path rootLocation;
+
+    public LocalFileStorageService(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
     
     @PostConstruct
     public void init() throws IOException {
@@ -84,6 +94,15 @@ public class LocalFileStorageService implements StorageService {
         Path targetLocation = rootLocation.resolve(filename);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         logger.info("Stored file: {}", targetLocation);
+
+        // Send message to queue for thumbnail generation
+        ImageProcessingMessage message = new ImageProcessingMessage(
+            filename,
+            file.getContentType(),
+            getStorageType(),
+            file.getSize()
+        );
+        rabbitTemplate.convertAndSend(QUEUE_NAME, message);
     }
 
     @Override
@@ -97,12 +116,30 @@ public class LocalFileStorageService implements StorageService {
 
     @Override
     public void deleteObject(String key) throws IOException {
+        // Delete both original and thumbnail if it exists
         Path file = rootLocation.resolve(key);
         if (!Files.exists(file)) {
             throw new FileNotFoundException("File not found: " + key);
         }
         Files.delete(file);
         logger.info("Deleted file: {}", file);
+
+        // Try to delete thumbnail if it exists
+        try {
+            Path thumbnailFile = rootLocation.resolve(getThumbnailKey(key));
+            if (Files.exists(thumbnailFile)) {
+                Files.delete(thumbnailFile);
+                logger.info("Deleted thumbnail file: {}", thumbnailFile);
+            }
+        } catch (Exception e) {
+            // Ignore if thumbnail doesn't exist or can't be deleted
+            logger.warn("Could not delete thumbnail for {}: {}", key, e.getMessage());
+        }
+    }
+
+    @Override
+    public String getStorageType() {
+        return "local";
     }
     
     private String generateUrl(String key) {
