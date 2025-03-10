@@ -24,10 +24,10 @@ sleep 10
 mkdir -p "$PROJECT_ROOT/logs"
 
 echo "Starting web module..."
-cd "$PROJECT_ROOT/web" && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev > "$PROJECT_ROOT/logs/web.log" 2>&1 &
+cd "$PROJECT_ROOT/web" && "$PROJECT_ROOT/mvnw" spring-boot:run -Dspring-boot.run.profiles=dev > "$PROJECT_ROOT/logs/web.log" 2>&1 &
 
 echo "Starting worker module..."
-cd "$PROJECT_ROOT/worker" && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev > "$PROJECT_ROOT/logs/worker.log" 2>&1 &
+cd "$PROJECT_ROOT/worker" && "$PROJECT_ROOT/mvnw" spring-boot:run -Dspring-boot.run.profiles=dev > "$PROJECT_ROOT/logs/worker.log" 2>&1 &
 
 echo "All services started! Check logs directory for output."
 echo "Web application: http://localhost:8080"
