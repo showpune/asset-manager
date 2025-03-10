@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout('Upload to S3', ~{::content})}">
+<body>
+    <div th:fragment="content">
+        <h2>Upload Image to S3</h2>
+        
+        <form th:action="@{/s3/upload}" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="mb-3">
+                <label for="file" class="form-label">Select Image</label>
+                <input type="file" class="form-control" id="file" name="file" accept="image/*" required>
+                <div class="form-text">Supported file types: JPG, PNG, GIF, etc. Maximum size: 10MB</div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success me-2">Upload</button>
+                <a th:href="@{/s3}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <div class="mt-4" id="imagePreview" style="display: none;">
+            <h3>Preview</h3>
+            <img id="preview" style="max-width: 100%; max-height: 300px;" alt="Image preview">
+        </div>
+
+        <script>
+            document.getElementById('file').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview').src = e.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

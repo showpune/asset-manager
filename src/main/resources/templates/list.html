@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout('S3 Object List', ~{::content})}">
+<body>
+    <div th:fragment="content">
+        <h2>Your Images</h2>
+
+        <div class="row mt-4" th:if="${not #lists.isEmpty(objects)}">
+            <div class="col-md-4 mb-4" th:each="object : ${objects}">
+                <div class="card">
+                    <img th:src="${object.url}" class="card-img-top" alt="Image preview" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate" th:text="${object.name}">Image name</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Size: <span th:text="${#numbers.formatDecimal(object.size / 1024, 0, 2) + ' KB'}">0 KB</span><br>
+                                Last modified: <span th:text="${#temporals.format(object.lastModified, 'dd-MM-yyyy HH:mm')}">Date</span>
+                            </small>
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a th:href="${object.url}" target="_blank" class="btn btn-primary btn-sm">View</a>
+                            <form th:action="@{'/s3/delete/' + ${object.key}}" method="post" onsubmit="return confirm('Are you sure you want to delete this file?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info" th:if="${#lists.isEmpty(objects)}">
+            No images found in the S3 bucket. <a th:href="@{/s3/upload}" class="alert-link">Upload your first image!</a>
+        </div>
+    </div>
+</body>
+</html>
