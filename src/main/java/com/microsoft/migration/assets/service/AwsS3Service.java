@@ -3,26 +3,29 @@ package com.microsoft.migration.assets.service;
 import com.microsoft.migration.assets.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class S3Service {
+@Profile("!dev") // Active when not in dev profile
+public class AwsS3Service implements StorageService {
 
     private final S3Client s3Client;
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
 
+    @Override
     public List<S3Object> listObjects() {
         ListObjectsV2Request request = ListObjectsV2Request.builder()
                 .bucket(bucketName)
@@ -41,6 +44,7 @@ public class S3Service {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void uploadObject(MultipartFile file) throws IOException {
         String key = file.getOriginalFilename();
         
@@ -53,7 +57,8 @@ public class S3Service {
         s3Client.putObject(request, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
     }
 
-    public ResponseInputStream<GetObjectResponse> getObject(String key) {
+    @Override
+    public InputStream getObject(String key) throws IOException {
         GetObjectRequest request = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -62,7 +67,8 @@ public class S3Service {
         return s3Client.getObject(request);
     }
 
-    public void deleteObject(String key) {
+    @Override
+    public void deleteObject(String key) throws IOException {
         DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)

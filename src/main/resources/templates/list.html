@@ -17,7 +17,7 @@
                             </small>
                         </p>
                         <div class="d-flex justify-content-between">
-                            <a th:href="${object.url}" target="_blank" class="btn btn-primary btn-sm">View</a>
+                            <a th:href="@{'/s3/view-page/' + ${object.key}}" class="btn btn-primary btn-sm">View</a>
                             <form th:action="@{'/s3/delete/' + ${object.key}}" method="post" onsubmit="return confirm('Are you sure you want to delete this file?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
