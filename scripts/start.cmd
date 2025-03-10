@@ -17,11 +17,16 @@ timeout /t 10 /nobreak
 rem Create logs directory if it doesn't exist
 if not exist "%PROJECT_ROOT%\logs" mkdir "%PROJECT_ROOT%\logs"
 
+rem Create pids directory if it doesn't exist
+if not exist "%PROJECT_ROOT%\pids" mkdir "%PROJECT_ROOT%\pids"
+
 echo Starting web module...
-start /B cmd /c "cd "%PROJECT_ROOT%\web" && "%PROJECT_ROOT%\mvnw" spring-boot:run -Dspring-boot.run.profiles=dev > "%PROJECT_ROOT%\logs\web.log" 2>&1"
+cd /d "%PROJECT_ROOT%\web"
+start "Web Module" cmd /k "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring.pid.file=%PROJECT_ROOT%\pids\web.pid -Dspring-boot.run.profiles=dev"
 
 echo Starting worker module...
-start /B cmd /c "cd "%PROJECT_ROOT%\worker" && "%PROJECT_ROOT%\mvnw" spring-boot:run -Dspring-boot.run.profiles=dev > "%PROJECT_ROOT%\logs\worker.log" 2>&1"
+cd /d "%PROJECT_ROOT%\worker"
+start "Worker Module" cmd /k "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring.pid.file=%PROJECT_ROOT%\pids\worker.pid -Dspring-boot.run.profiles=dev"
 
 echo All services started! Check logs directory for output.
 echo Web application: http://localhost:8080
