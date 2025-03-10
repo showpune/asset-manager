@@ -1,4 +1,10 @@
 @echo off
+setlocal
+
+rem Get the directory where the script is located
+set SCRIPT_DIR=%~dp0
+set PROJECT_ROOT=%SCRIPT_DIR%..
+
 echo Stopping Java processes...
 wmic process where "commandline like '%%spring-boot:run%%'" call terminate
 
