@@ -11,14 +11,10 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
     public static final String QUEUE_NAME = "image-processing";
 
-    // We need to use the same queue definition as the worker to avoid conflicts
     @Bean
     public Queue imageProcessingQueue() {
-        // Using QueueBuilder with same arguments as worker for compatibility
-        return QueueBuilder.durable(QUEUE_NAME)
-                .withArgument("x-dead-letter-exchange", "image-processing.retry")
-                .withArgument("x-dead-letter-routing-key", "retry")
-                .build();
+        // Simple durable queue without dead letter exchange configuration
+        return QueueBuilder.durable(QUEUE_NAME).build();
     }
 
     @Bean
