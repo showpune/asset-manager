@@ -22,13 +22,12 @@ if not exist "%PROJECT_ROOT%\pids" mkdir "%PROJECT_ROOT%\pids"
 
 echo Starting web module...
 cd /d "%PROJECT_ROOT%\web"
-start "Web Module" cmd /k "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring.pid.file=%PROJECT_ROOT%\pids\web.pid -Dspring-boot.run.profiles=dev"
+start "Web Module" cmd /c "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring-boot.run.jvmArguments=-Dspring.pid.file=%PROJECT_ROOT%\pids\web.pid -Dspring-boot.run.profiles=dev"
 
 echo Starting worker module...
 cd /d "%PROJECT_ROOT%\worker"
-start "Worker Module" cmd /k "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring.pid.file=%PROJECT_ROOT%\pids\worker.pid -Dspring-boot.run.profiles=dev"
+start "Worker Module" cmd /k "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring-boot.run.jvmArguments=-Dspring.pid.file=%PROJECT_ROOT%\pids\worker.pid -Dspring-boot.run.profiles=dev"
 
-echo All services started! Check logs directory for output.
 echo Web application: http://localhost:8080
 echo Worker application: http://localhost:8081
 echo RabbitMQ Management: http://localhost:15672 (guest/guest)
