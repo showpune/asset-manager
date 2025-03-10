@@ -30,7 +30,7 @@ public class LocalFileStorageService implements StorageService {
     
     private final RabbitTemplate rabbitTemplate;
     
-    @Value("${local.storage.directory:storage}")
+    @Value("${local.storage.directory:../storage}")
     private String storageDirectory;
     
     private Path rootLocation;
