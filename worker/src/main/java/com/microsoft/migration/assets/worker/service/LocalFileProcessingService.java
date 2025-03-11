@@ -53,4 +53,10 @@ public class LocalFileProcessingService extends AbstractFileProcessingService {
     public String getStorageType() {
         return "local";
     }
+
+    @Override
+    protected String generateUrl(String key) {
+        // For local storage, we'll just return the relative path
+        return "/storage/" + key;
+    }
 }

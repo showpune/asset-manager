@@ -92,7 +92,6 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
             }
         } catch (Exception e) {
             log.error("Failed to process image: " + message.getKey(), e);
-            // Re-throw the exception to trigger retry
             throw new RuntimeException("Failed to process image: " + message.getKey(), e);
         } finally {
             try {
@@ -111,6 +110,8 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
             }
         }
     }
+
+    protected abstract String generateUrl(String key);
 
     protected void generateThumbnail(Path input, Path output) throws IOException {
         log.info("Generating thumbnail for: {}", input);

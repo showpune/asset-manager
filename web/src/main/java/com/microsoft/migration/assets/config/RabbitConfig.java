@@ -13,7 +13,6 @@ public class RabbitConfig {
 
     @Bean
     public Queue imageProcessingQueue() {
-        // Simple durable queue without dead letter exchange configuration
         return QueueBuilder.durable(QUEUE_NAME).build();
     }
 
