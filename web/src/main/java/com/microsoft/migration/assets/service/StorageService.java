@@ -1,6 +1,6 @@
 package com.microsoft.migration.assets.service;
 
-import com.microsoft.migration.assets.model.S3Object;
+import com.azure.storage.blob.models.BlobItem;
 import com.microsoft.migration.assets.common.util.StorageUtil;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,10 +10,10 @@ import java.util.List;
 
 /**
  * Interface for storage operations that can be implemented by different storage providers
- * (AWS S3, local file system, etc.)
+ * (Azure Blob Storage, local file system, etc.)
  */
 public interface StorageService {
-    List<S3Object> listObjects();
+    List<BlobItem> listObjects();
     void uploadObject(MultipartFile file) throws IOException;
     InputStream getObject(String key) throws IOException;
     void deleteObject(String key) throws IOException;

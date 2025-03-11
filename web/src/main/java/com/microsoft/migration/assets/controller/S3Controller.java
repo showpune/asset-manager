@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-
+import com.azure.storage.blob.models.BlobItem;
 @Controller
-@RequestMapping("/s3")
+@RequestMapping("/blob")
 @RequiredArgsConstructor
 public class S3Controller {
 
@@ -27,7 +27,7 @@ public class S3Controller {
 
     @GetMapping
     public String listObjects(Model model) {
-        List<S3Object> objects = storageService.listObjects();
+        List<BlobItem> objects = storageService.listObjects();
         model.addAttribute("objects", objects);
         return "list";
     }
@@ -42,15 +42,15 @@ public class S3Controller {
         try {
             if (file.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Please select a file to upload");
-                return "redirect:/s3/upload";
+                return "redirect:/blob/upload";
             }
 
             storageService.uploadObject(file);
             redirectAttributes.addFlashAttribute("success", "File uploaded successfully");
-            return "redirect:/s3";
+            return "redirect:/blob";
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to upload file: " + e.getMessage());
-            return "redirect:/s3/upload";
+            return "redirect:/blob/upload";
         }
     }
     
@@ -58,8 +58,8 @@ public class S3Controller {
     public String viewObjectPage(@PathVariable String key, Model model, RedirectAttributes redirectAttributes) {
         try {
             // Find the object in the list of objects
-            Optional<S3Object> foundObject = storageService.listObjects().stream()
-                    .filter(obj -> obj.getKey().equals(key))
+            Optional<BlobItem> foundObject = storageService.listObjects().stream()
+                    .filter(obj -> obj.getName().equals(key))
                     .findFirst();
             
             if (foundObject.isPresent()) {
@@ -67,11 +67,11 @@ public class S3Controller {
                 return "view";
             } else {
                 redirectAttributes.addFlashAttribute("error", "Image not found");
-                return "redirect:/s3";
+                return "redirect:/blob";
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to view image: " + e.getMessage());
-            return "redirect:/s3";
+            return "redirect:/blob";
         }
     }
 
@@ -100,6 +100,6 @@ public class S3Controller {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to delete file: " + e.getMessage());
         }
-        return "redirect:/s3";
+        return "redirect:/blob";
     }
 }

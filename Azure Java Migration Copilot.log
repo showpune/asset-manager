@@ -1,0 +1,125 @@
+Microsoft formulas downloaded successfully.
+RAG loaded with 573 documents
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\AbstractFileProcessingService.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\AbstractFileProcessingService.java
+Generating change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\worker\pom.xml
+Generated change for e:\repo\assets-manager\worker\pom.xml
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\AwsS3Config.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\AwsS3Config.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\RabbitConfig.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\AbstractFileProcessingService.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\AbstractFileProcessingService.java
+RAG loaded with 573 documents
+RAG loaded with 573 documents
+Generating change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\worker\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generated change for e:\repo\assets-manager\web\src\main\resources\application.properties
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\AwsS3Config.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\config\AwsS3Config.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\AwsS3Service.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\AwsS3Config.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\config\AwsS3Config.java
+Generating change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\S3FileProcessingService.java
+Generated change for e:\repo\assets-manager\worker\src\main\java\com\microsoft\migration\assets\worker\service\S3FileProcessingService.java
+Generating change for e:\repo\assets-manager\pom.xml
+Generated change for e:\repo\assets-manager\pom.xml
+Generating change for e:\repo\assets-manager\web\pom.xml
+Generated change for e:\repo\assets-manager\web\pom.xml
+Generating change for e:\repo\assets-manager\worker\pom.xml
+Generated change for e:\repo\assets-manager\worker\pom.xml
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\controller\S3Controller.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\controller\S3Controller.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\model\S3Object.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\model\S3Object.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+No change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\LocalFileStorageService.java
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\StorageService.java
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\service\StorageService.java
+Starting the build fix process...
+(1/10) Building the project...
+Found 3 build errors. Trying to fix them...
+Found 3 file modification to fix the build errors. Applying them...
+(2/10) Building the project...
+Found 10 build errors. Trying to fix them...
+Found 2 file modification to fix the build errors. Applying them...
+(3/10) Building the project...
+Found 10 build errors. Trying to fix them...
+Found 2 file modification to fix the build errors. Applying them...
+(4/10) Building the project...
+Found 1 build errors. Trying to fix them...
+Found 1 file modification to fix the build errors. Applying them...
+(5/10) Building the project...
+Found 9 build errors. Trying to fix them...
+Found 2 file modification to fix the build errors. Applying them...
+(6/10) Building the project...
+Found 7 build errors. Trying to fix them...
+Found 3 file modification to fix the build errors. Applying them...
+(7/10) Building the project...
+Generating change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\controller\S3Controller.java
+Found 7 build errors. Trying to fix them...
+Generated change for e:\repo\assets-manager\web\src\main\java\com\microsoft\migration\assets\controller\S3Controller.java
+Found 3 file modification to fix the build errors. Applying them...
+(8/10) Building the project...
+Found 7 build errors. Trying to fix them...
+Found 1 file modification to fix the build errors. Applying them...
+(9/10) Building the project...
+Found 3 build errors. Trying to fix them...
+Found 1 file modification to fix the build errors. Applying them...
+(10/10) Building the project...
+Found 1 build errors. Trying to fix them...
+Found 1 file modification to fix the build errors. Applying them...
+(11/10) Building the project...
+Build failed and retry limit reached. Exiting...

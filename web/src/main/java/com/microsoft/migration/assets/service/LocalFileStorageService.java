@@ -1,7 +1,7 @@
 package com.microsoft.migration.assets.service;
 
 import com.microsoft.migration.assets.common.model.ImageProcessingMessage;
-import com.microsoft.migration.assets.model.S3Object;
+import com.azure.storage.blob.models.BlobItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -51,8 +51,8 @@ public class LocalFileStorageService implements StorageService {
         }
     }
 
-    @Override
-    public List<S3Object> listObjects() {
+
+    public List<BlobItem> listObjects() {
         try {
             return Files.walk(rootLocation, 1)
                 .filter(path -> !path.equals(rootLocation))
@@ -60,12 +60,11 @@ public class LocalFileStorageService implements StorageService {
                     try {
                         String filename = path.getFileName().toString();
                         BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-                        return new S3Object(
-                            filename,
-                            filename,
-                            Files.size(path),
-                            attrs.creationTime().toInstant(),
-                            generateUrl(filename)
+                        BlobItem blobItem = new BlobItem();
+                        blobItem.setName(filename);
+                        blobItem.setProperties(new BlobItemProperties().setContentLength(Files.size(path)).setCreationTime(attrs.creationTime().toInstant()));
+                        return blobItem;
+                        return blobItem;
                         );
                     } catch (IOException e) {
                         logger.error("Failed to read file attributes", e);
