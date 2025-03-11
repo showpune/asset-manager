@@ -20,6 +20,10 @@ if not exist "%PROJECT_ROOT%\logs" mkdir "%PROJECT_ROOT%\logs"
 rem Create pids directory if it doesn't exist
 if not exist "%PROJECT_ROOT%\pids" mkdir "%PROJECT_ROOT%\pids"
 
+echo Building common module...
+cd /d "%PROJECT_ROOT%"
+call mvnw.cmd clean install -DskipTests -pl common -am
+
 echo Starting web module...
 cd /d "%PROJECT_ROOT%\web"
 start "Web Module" cmd /c "%PROJECT_ROOT%\mvnw.cmd spring-boot:run -Dspring-boot.run.jvmArguments=-Dspring.pid.file=%PROJECT_ROOT%\pids\web.pid -Dspring-boot.run.profiles=dev"

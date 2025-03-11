@@ -1,4 +1,4 @@
-package com.microsoft.migration.assets.worker.model;
+package com.microsoft.migration.assets.common.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

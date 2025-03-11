@@ -1,9 +1,9 @@
 package com.microsoft.migration.assets.service;
 
-import com.microsoft.migration.assets.model.ImageMetadata;
-import com.microsoft.migration.assets.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.common.model.ImageMetadata;
+import com.microsoft.migration.assets.common.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.common.repository.ImageMetadataRepository;
 import com.microsoft.migration.assets.model.S3Object;
-import com.microsoft.migration.assets.repository.ImageMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;

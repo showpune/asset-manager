@@ -1,6 +1,7 @@
 package com.microsoft.migration.assets.worker.service;
 
-import com.microsoft.migration.assets.worker.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.common.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.common.util.StorageUtil;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -70,8 +71,8 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
             log.info("Processing image: {}", message.getKey());
 
             tempDir = Files.createTempDirectory("image-processing");
-            originalFile = tempDir.resolve("original" + getExtension(message.getKey()));
-            thumbnailFile = tempDir.resolve("thumbnail" + getExtension(message.getKey()));
+            originalFile = tempDir.resolve("original" + StorageUtil.getExtension(message.getKey()));
+            thumbnailFile = tempDir.resolve("thumbnail" + StorageUtil.getExtension(message.getKey()));
 
             // Only process if message matches our storage type
             if (message.getStorageType().equals(getStorageType())) {
@@ -82,7 +83,7 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 generateThumbnail(originalFile, thumbnailFile);
 
                 // Upload thumbnail
-                String thumbnailKey = getThumbnailKey(message.getKey());
+                String thumbnailKey = StorageUtil.getThumbnailKey(message.getKey());
                 uploadThumbnail(thumbnailFile, thumbnailKey, message.getContentType());
 
                 log.info("Successfully processed image: {}", message.getKey());
@@ -148,7 +149,7 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
         resultImage = sharpenImage(resultImage);
 
         // Determine the output format based on the file extension
-        String extension = getExtension(output.toString());
+        String extension = StorageUtil.getExtension(output.toString());
         if (extension.startsWith(".")) {
             extension = extension.substring(1);
         }
@@ -293,18 +294,5 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
         
         // Apply the filter
         return convolveOp.filter(image, output);
-    }
-
-    protected String getThumbnailKey(String key) {
-        int dotIndex = key.lastIndexOf('.');
-        if (dotIndex > 0) {
-            return key.substring(0, dotIndex) + "_thumbnail" + key.substring(dotIndex);
-        }
-        return key + "_thumbnail";
-    }
-
-    protected String getExtension(String filename) {
-        int dotIndex = filename.lastIndexOf('.');
-        return dotIndex > 0 ? filename.substring(dotIndex) : "";
     }
 }

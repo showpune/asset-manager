@@ -1,7 +1,7 @@
 package com.microsoft.migration.assets.worker.service;
 
-import com.microsoft.migration.assets.worker.model.ImageMetadata;
-import com.microsoft.migration.assets.worker.repository.ImageMetadataRepository;
+import com.microsoft.migration.assets.common.model.ImageMetadata;
+import com.microsoft.migration.assets.common.repository.ImageMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
