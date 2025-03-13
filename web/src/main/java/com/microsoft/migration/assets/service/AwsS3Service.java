@@ -2,7 +2,7 @@ package com.microsoft.migration.assets.service;
 
 import com.microsoft.migration.assets.model.ImageMetadata;
 import com.microsoft.migration.assets.model.ImageProcessingMessage;
-import com.microsoft.migration.assets.model.S3Object;
+import com.microsoft.migration.assets.model.S3StorageItem;
 import com.microsoft.migration.assets.repository.ImageMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,7 +36,7 @@ public class AwsS3Service implements StorageService {
     private String bucketName;
 
     @Override
-    public List<S3Object> listObjects() {
+    public List<S3StorageItem> listObjects() {
         ListObjectsV2Request request = ListObjectsV2Request.builder()
                 .bucket(bucketName)
                 .build();
@@ -52,7 +52,7 @@ public class AwsS3Service implements StorageService {
                             .findFirst()
                             .orElse(s3Object.lastModified()); // fallback to lastModified if metadata not found
 
-                    return new S3Object(
+                    return new S3StorageItem(
                             s3Object.key(),
                             extractFilename(s3Object.key()),
                             s3Object.size(),

@@ -34,10 +34,13 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <strong>Size:</strong> <span th:text="${#numbers.formatDecimal(object.size / 1024, 0, 2) + ' KB'}">0 KB</span>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
+                            <strong>Uploaded:</strong> <span th:text="${#temporals.format(object.uploadedAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                        </div>
+                        <div class="col-md-5">
                             <strong>Last modified:</strong> <span th:text="${#temporals.format(object.lastModified, 'dd-MM-yyyy HH:mm')}">Date</span>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 package com.microsoft.migration.assets.controller;
 
-import com.microsoft.migration.assets.model.S3Object;
+import com.microsoft.migration.assets.model.S3StorageItem;
 import com.microsoft.migration.assets.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -27,7 +27,7 @@ public class S3Controller {
 
     @GetMapping
     public String listObjects(Model model) {
-        List<S3Object> objects = storageService.listObjects();
+        List<S3StorageItem> objects = storageService.listObjects();
         model.addAttribute("objects", objects);
         return "list";
     }
@@ -58,7 +58,7 @@ public class S3Controller {
     public String viewObjectPage(@PathVariable String key, Model model, RedirectAttributes redirectAttributes) {
         try {
             // Find the object in the list of objects
-            Optional<S3Object> foundObject = storageService.listObjects().stream()
+            Optional<S3StorageItem> foundObject = storageService.listObjects().stream()
                     .filter(obj -> obj.getKey().equals(key))
                     .findFirst();
             

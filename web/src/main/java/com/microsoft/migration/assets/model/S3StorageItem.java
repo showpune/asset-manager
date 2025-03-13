@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class S3Object {
+public class S3StorageItem {
     private String key;
     private String name;
     private long size;
