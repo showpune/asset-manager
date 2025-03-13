@@ -3,7 +3,65 @@ Sample project for migration tool code remediation that manages assets in cloud 
 
 ## Data Flow Chart
 
-[![](https://mermaid.ink/img/pako:eNqNVW1v2jAQ_itWqkpUSlcySil8mNQVMVUqWtv0RVroh0tyAatJTB2nFYL-9zmx44QA0_hAbN_z3Nn3-M5rK2AhWiMritlnsAAuyON4lhL5Oz4mV8tlTAMQlKWZWnxBXy568tM0vmoj42_IPfUhLvIPGqC2GZ-uYBzmSK5ZsmQppkJ7dnte5-rFld8TTbllAcQT1-uUAzKhMRJ3lQlMTtpOp5hlhdOfnMnQavkBfJ-K6f26Gny1SGMQ4EOGauGOZWLO0b2_9Tr1eCfSfY456i2XY48mMvLpkrNAboKmc_JeLGveAwq-2o_7xgvbFtpEecqqUxSjjlf8v57sAZGJ1K1GktPTH5unZcwgJDdFvI1WrAV5pvipANk2wjjXCpf-t7Qv-YWISH5zOqeplEaHcnv_CdTK7qIxDcldnUkt68ZoecD_FAWEUs1NQ8UdaCEFxQ80596z3R3MoZ0a4OHQJpXV5htamaXC112eLeqjlpelcb8UpM7JBGQdhJvGzWrftJJxFQmptUMSmpIQY1gd8HwtSztPsI6vqrd9G1RJ1wfQC4WHMftMywtXqdzI7D9R27mtob8wRQ4CyeMiT_xUnnd7Vw2ovuoN4J7Qu6CtyI3OtIplhtU8iCHLxhgRkIpHNI5HR8NuANHQzkTRZEZH3fB8AI4dsJjxatbiZrrXKT70wwsYGL7j9_F7t-KrWYvvl-1M06MoCC67ho4Xfadr6GrWooe-pgY47IWXhnoOzvllUFHVrEUtu5IJHPWHoWFH_UHkDCq2mrXYeWZ2jdEQhmDI_sAJHBNazZoylC50odlaQ6iakzK6PVvrV-W3aTWV5TeeAmWqC1Rmpmkoq8FuFNB7XSkKUTbO4lSWbSXIE6ChfDPXBWRmiQUmOLNGchhiBHksZpbdMD0Dp-DH8tWQmLU-rXV2FrFUTCCh8UqRb9I3MuEoXRUY-Vp9yWiQC-au0sAaCS43aXGWzxfWKII4k7N8KXsPjinMOSQVBEMq8zJV73r5vNvWEtI_jCWa-PUXX8GUow?type=png)](https://mermaid.live/edit#pako:eNqNVW1v2jAQ_itWqkpUSlcySil8mNQVMVUqWtv0RVroh0tyAatJTB2nFYL-9zmx44QA0_hAbN_z3Nn3-M5rK2AhWiMritlnsAAuyON4lhL5Oz4mV8tlTAMQlKWZWnxBXy568tM0vmoj42_IPfUhLvIPGqC2GZ-uYBzmSK5ZsmQppkJ7dnte5-rFld8TTbllAcQT1-uUAzKhMRJ3lQlMTtpOp5hlhdOfnMnQavkBfJ-K6f26Gny1SGMQ4EOGauGOZWLO0b2_9Tr1eCfSfY456i2XY48mMvLpkrNAboKmc_JeLGveAwq-2o_7xgvbFtpEecqqUxSjjlf8v57sAZGJ1K1GktPTH5unZcwgJDdFvI1WrAV5pvipANk2wjjXCpf-t7Qv-YWISH5zOqeplEaHcnv_CdTK7qIxDcldnUkt68ZoecD_FAWEUs1NQ8UdaCEFxQ80596z3R3MoZ0a4OHQJpXV5htamaXC112eLeqjlpelcb8UpM7JBGQdhJvGzWrftJJxFQmptUMSmpIQY1gd8HwtSztPsI6vqrd9G1RJ1wfQC4WHMftMywtXqdzI7D9R27mtob8wRQ4CyeMiT_xUnnd7Vw2ovuoN4J7Qu6CtyI3OtIplhtU8iCHLxhgRkIpHNI5HR8NuANHQzkTRZEZH3fB8AI4dsJjxatbiZrrXKT70wwsYGL7j9_F7t-KrWYvvl-1M06MoCC67ho4Xfadr6GrWooe-pgY47IWXhnoOzvllUFHVrEUtu5IJHPWHoWFH_UHkDCq2mrXYeWZ2jdEQhmDI_sAJHBNazZoylC50odlaQ6iakzK6PVvrV-W3aTWV5TeeAmWqC1Rmpmkoq8FuFNB7XSkKUTbO4lSWbSXIE6ChfDPXBWRmiQUmOLNGchhiBHksZpbdMD0Dp-DH8tWQmLU-rXV2FrFUTCCh8UqRb9I3MuEoXRUY-Vp9yWiQC-au0sAaCS43aXGWzxfWKII4k7N8KXsPjinMOSQVBEMq8zJV73r5vNvWEtI_jCWa-PUXX8GUow)
+```mermaid
+flowchart TD
+
+%% Applications
+WebApp[Web Application]
+Worker[Worker Service]
+
+%% Storage Components
+S3[(AWS S3)]
+LocalFS[("Local File System<br/>dev only")]
+
+%% Message Broker
+RabbitMQ(RabbitMQ)
+
+%% Database
+PostgreSQL[(PostgreSQL)]
+
+%% User
+User([User])
+
+%% User Flow
+User -->|Upload Image| WebApp
+User -->|View Images| WebApp
+
+%% Web App Flows
+WebApp -->|Store Original Image| S3
+WebApp -->|Store Original Image| LocalFS
+WebApp -->|Send Processing Message| RabbitMQ
+WebApp -->|Store Metadata| PostgreSQL
+WebApp -->|Retrieve Images| S3
+WebApp -->|Retrieve Images| LocalFS
+WebApp -->|Retrieve Metadata| PostgreSQL
+
+%% RabbitMQ Flow
+RabbitMQ -->|Push Message| Worker
+
+%% Worker Flow
+Worker -->|Download Original| S3
+Worker -->|Download Original| LocalFS
+Worker -->|Upload Thumbnail| S3
+Worker -->|Upload Thumbnail| LocalFS
+Worker -->|Store Metadata| PostgreSQL
+Worker -->|Retrieve Metadata| PostgreSQL
+
+%% Styling
+classDef app fill:#90caf9,stroke:#0d47a1,color:#0d47a1
+classDef storage fill:#a5d6a7,stroke:#1b5e20,color:#1b5e20
+classDef broker fill:#ffcc80,stroke:#e65100,color:#e65100
+classDef db fill:#ce93d8,stroke:#4a148c,color:#4a148c
+classDef queue fill:#fff59d,stroke:#f57f17,color:#f57f17
+classDef user fill:#ef9a9a,stroke:#b71c1c,color:#b71c1c
+
+class WebApp,Worker app
+class S3,LocalFS storage
+class RabbitMQ broker
+class PostgreSQL db
+class Queue,RetryQueue queue
+class User user
+```
 
 ## Run Locally
 
