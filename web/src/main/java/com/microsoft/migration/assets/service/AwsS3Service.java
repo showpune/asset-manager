@@ -5,6 +5,8 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
+import com.azure.storage.blob.models.BlobItemProperties;
+import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.microsoft.migration.assets.model.ImageMetadata;
 import com.microsoft.migration.assets.model.ImageProcessingMessage;
 import com.microsoft.migration.assets.model.S3StorageItem;
@@ -47,7 +49,7 @@ public class AwsS3Service implements StorageService {
                 .map(blobItem -> new S3StorageItem(
                         blobItem.getName(),
                         extractFilename(blobItem.getName()),
-                        blobItem.getProperties().getBlobSize(),
+                        blobItem.getProperties().getContentLength(),
                         blobItem.getProperties().getLastModified().toInstant(),
                         generateUrl(blobItem.getName())
                 ))
