@@ -17,21 +17,10 @@
     
     <properties>
         <java.version>21</java.version>
-        <aws-sdk.version>2.25.13</aws-sdk.version>
     </properties>
 
     <modules>
         <module>web</module>
         <module>worker</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>s3</artifactId>
-                <version>${aws-sdk.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
