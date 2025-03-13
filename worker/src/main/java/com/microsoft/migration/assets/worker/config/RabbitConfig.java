@@ -1,56 +1,28 @@
 package com.microsoft.migration.assets.worker.config;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
-import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
-public class RabbitConfig implements RabbitListenerConfigurer {
+public class RabbitConfig {
     public static final String QUEUE_NAME = "image-processing";
-
-    // Dead letter queue configuration for the retry mechanism
-    public static final String RETRY_EXCHANGE = "image-processing.retry";
-    public static final String RETRY_QUEUE = "image-processing.retry";
-    public static final String RETRY_ROUTING_KEY = "retry";
     public static final int RETRY_DELAY_MS = 60000; // 1 minute delay
+    public static final int MAX_ATTEMPTS = 3; // Maximum number of retry attempts
 
     @Bean
     public Queue imageProcessingQueue() {
-        return QueueBuilder.durable(QUEUE_NAME)
-                .withArgument("x-dead-letter-exchange", RETRY_EXCHANGE)
-                .withArgument("x-dead-letter-routing-key", RETRY_ROUTING_KEY)
-                .build();
-    }
-
-    @Bean
-    public Queue retryQueue() {
-        return QueueBuilder.durable(RETRY_QUEUE)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", QUEUE_NAME)
-                .withArgument("x-message-ttl", RETRY_DELAY_MS)
-                .build();
-    }
-
-    @Bean
-    public DirectExchange retryExchange() {
-        return new DirectExchange(RETRY_EXCHANGE);
-    }
-
-    @Bean
-    public Binding retryBinding() {
-        return BindingBuilder
-                .bind(retryQueue())
-                .to(retryExchange())
-                .with(RETRY_ROUTING_KEY);
+        return QueueBuilder.durable(QUEUE_NAME).build();
     }
 
     @Bean
@@ -65,18 +37,25 @@ public class RabbitConfig implements RabbitListenerConfigurer {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         configurer.configure(factory, connectionFactory);
         factory.setMessageConverter(jsonMessageConverter());
-        factory.setDefaultRequeueRejected(false); // Let the nack with requeue=true handle requeuing
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return factory;
     }
-
+    
     @Bean
-    public MessageHandlerMethodFactory messageHandlerMethodFactory() {
-        DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
-        return factory;
+    public RetryTemplate retryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+        
+        // Configure retry policy (number of attempts)
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+        retryPolicy.setMaxAttempts(MAX_ATTEMPTS);
+        retryTemplate.setRetryPolicy(retryPolicy);
+        
+        // Configure backoff policy (delay between retries)
+        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+        backOffPolicy.setBackOffPeriod(RETRY_DELAY_MS);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        
+        return retryTemplate;
     }
 
-    @Override
-    public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
-        registrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
-    }
 }
