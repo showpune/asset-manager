@@ -11,7 +11,7 @@
 
     <artifactId>assets-manager-worker</artifactId>
     <name>assets-manager-worker</name>
-    <description>Worker module for background processing of uploaded assets</description>
+    <description>Worker module for assets manager that handles thumbnail generation</description>
 
     <dependencies>
         <dependency>
@@ -48,11 +48,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.migration</groupId>
-            <artifactId>assets-manager-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

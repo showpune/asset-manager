@@ -1,7 +1,7 @@
 package com.microsoft.migration.assets.worker.service;
 
-import com.microsoft.migration.assets.common.model.ImageProcessingMessage;
-import com.microsoft.migration.assets.common.util.StorageUtil;
+import com.microsoft.migration.assets.worker.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.worker.util.StorageUtil;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

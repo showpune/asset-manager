@@ -1,7 +1,7 @@
 package com.microsoft.migration.assets.service;
 
 import com.microsoft.migration.assets.model.S3Object;
-import com.microsoft.migration.assets.common.util.StorageUtil;
+import com.microsoft.migration.assets.util.StorageUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

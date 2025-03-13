@@ -1,4 +1,4 @@
-package com.microsoft.migration.assets.common.util;
+package com.microsoft.migration.assets.worker.util;
 
 public class StorageUtil {
     /**

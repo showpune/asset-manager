@@ -1,6 +1,6 @@
 package com.microsoft.migration.assets.service;
 
-import com.microsoft.migration.assets.common.model.ImageProcessingMessage;
+import com.microsoft.migration.assets.model.ImageProcessingMessage;
 import com.microsoft.migration.assets.model.S3Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

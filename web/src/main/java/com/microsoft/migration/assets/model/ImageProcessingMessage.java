@@ -1,4 +1,4 @@
-package com.microsoft.migration.assets.common.model;
+package com.microsoft.migration.assets.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

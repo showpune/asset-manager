@@ -19,11 +19,6 @@ mkdir -p "$PROJECT_ROOT/logs"
 # Create pids directory if it doesn't exist
 mkdir -p "$PROJECT_ROOT/pids"
 
-# Build common module first
-echo "Building common module..."
-cd "$PROJECT_ROOT"
-./mvnw clean install -DskipTests -pl common -am
-
 # Start web module
 echo "Starting web module..."
 cd "$PROJECT_ROOT/web"
