@@ -31,14 +31,11 @@ import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
 @Profile("!dev") // Active when not in dev profile
 public class AwsS3Service implements StorageService {
 
-    private final BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-            .endpoint("https://<your-storage-account-name>.blob.core.windows.net")
-            .credential(new DefaultAzureCredentialBuilder().build())
-            .buildClient();
+    private final BlobServiceClient blobServiceClient;
     private final RabbitTemplate rabbitTemplate;
     private final ImageMetadataRepository imageMetadataRepository;
 
-    @Value("${azure.storage.container}")
+    @Value("${azure.storage.blob.container-name}")
     private String containerName;
 
     @Override
@@ -116,7 +113,7 @@ public class AwsS3Service implements StorageService {
 
     @Override
     public String getStorageType() {
-        return "azure";
+        return "AzureStorageBlob";
     }
 
     private String extractFilename(String key) {

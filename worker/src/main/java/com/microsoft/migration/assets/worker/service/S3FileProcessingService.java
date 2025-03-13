@@ -22,7 +22,7 @@ public class S3FileProcessingService extends AbstractFileProcessingService {
             .credential(new DefaultAzureCredentialBuilder().build())
             .buildClient();
     
-    @Value("${azure.blob.container}")
+    @Value("${azure.storage.blob.container-name}")
     private String containerName;
 
     @Override

@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AwsS3Config {
-    @Value("${azure.blob.endpoint}")
-    private String endpoint;
+    @Value("${azure.storage.account-name}")
+    private String accountName;
 
     @Bean
     public BlobServiceClient blobServiceClient() {
         return new BlobServiceClientBuilder()
-                .endpoint(endpoint)
+                .endpoint("https://" + accountName + ".blob.core.windows.net")
                 .credential(new DefaultAzureCredentialBuilder().build())
                 .buildClient();
     }
