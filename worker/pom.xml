@@ -9,6 +9,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <aws-sdk.version>2.25.13</aws-sdk.version>
+    </properties>
+
     <artifactId>assets-manager-worker</artifactId>
     <name>assets-manager-worker</name>
     <description>Worker module for assets manager that handles thumbnail generation</description>
@@ -61,6 +65,16 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${aws-sdk.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
