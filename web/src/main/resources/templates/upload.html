@@ -21,7 +21,7 @@
             </div>
             
             <div class="mt-4">
-                <button type="submit" class="btn btn-success me-2">Upload</button>
+                <button type="submit" class="btn btn-success me-2" id="uploadBtn">Upload</button>
                 <a th:href="@{/s3}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
@@ -114,6 +114,17 @@
                     reader.readAsDataURL(file);
                 }
             }
+            
+            // Handle form submission to store upload info in session storage
+            document.getElementById('uploadForm').addEventListener('submit', function(e) {
+                const fileInput = document.getElementById('file');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    // Store upload information in sessionStorage
+                    sessionStorage.setItem('uploadSuccess', 'true');
+                    sessionStorage.setItem('uploadedKey', file.name);
+                }
+            });
         </script>
     </div>
 </body>

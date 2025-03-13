@@ -27,7 +27,7 @@ public interface StorageService {
      * Get object from storage by key
      */
     InputStream getObject(String key) throws IOException;
-    
+
     /**
      * Delete object from storage by key
      */
