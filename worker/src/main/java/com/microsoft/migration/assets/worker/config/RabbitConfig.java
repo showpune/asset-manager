@@ -1,13 +1,14 @@
 package com.microsoft.migration.assets.worker.config;
 
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
+import com.azure.core.credential.TokenCredential;
+import com.azure.core.exception.ResourceNotFoundException;
+import com.azure.messaging.servicebus.administration.ServiceBusAdministrationClient;
+import com.azure.messaging.servicebus.administration.ServiceBusAdministrationClientBuilder;
+import com.azure.messaging.servicebus.administration.models.QueueProperties;
+import com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties.AzureServiceBusProperties;
+import com.azure.spring.messaging.ConsumerIdentifier;
+import com.azure.spring.messaging.PropertiesSupplier;
+import com.azure.spring.messaging.servicebus.core.properties.ProcessorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
@@ -21,24 +22,28 @@ public class RabbitConfig {
     public static final int MAX_ATTEMPTS = 3; // Maximum number of retry attempts
 
     @Bean
-    public Queue imageProcessingQueue() {
-        return QueueBuilder.durable(QUEUE_NAME).build();
+    public ServiceBusAdministrationClient serviceBusAdministrationClient(AzureServiceBusProperties properties, TokenCredential credential) {
+        return new ServiceBusAdministrationClientBuilder()
+            .credential(properties.getFullyQualifiedNamespace(), credential)
+            .buildClient();
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public QueueProperties imageProcessingQueue(ServiceBusAdministrationClient serviceBusAdministrationClient) {
+        try {
+            return serviceBusAdministrationClient.getQueue(QUEUE_NAME);
+        } catch (ResourceNotFoundException e) {
+            return serviceBusAdministrationClient.createQueue(QUEUE_NAME);
+        }
     }
 
     @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-            ConnectionFactory connectionFactory,
-            SimpleRabbitListenerContainerFactoryConfigurer configurer) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        configurer.configure(factory, connectionFactory);
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        return factory;
+    public PropertiesSupplier<ConsumerIdentifier, ProcessorProperties> propertiesSupplier() {
+        return identifier -> {
+            ProcessorProperties processorProperties = new ProcessorProperties();
+            processorProperties.setAutoComplete(false);
+            return processorProperties;
+        };
     }
     
     @Bean
