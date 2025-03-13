@@ -64,6 +64,7 @@ public class LocalFileStorageService implements StorageService {
                             filename,
                             filename,
                             Files.size(path),
+                            attrs.lastModifiedTime().toInstant(),
                             attrs.creationTime().toInstant(),
                             generateUrl(filename)
                         );

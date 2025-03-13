@@ -2,8 +2,8 @@ package com.microsoft.migration.assets.service;
 
 import com.microsoft.migration.assets.model.ImageMetadata;
 import com.microsoft.migration.assets.model.ImageProcessingMessage;
-import com.microsoft.migration.assets.repository.ImageMetadataRepository;
 import com.microsoft.migration.assets.model.S3Object;
+import com.microsoft.migration.assets.repository.ImageMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,13 +44,23 @@ public class AwsS3Service implements StorageService {
         ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
         return response.contents().stream()
-                .map(s3Object -> new S3Object(
-                        s3Object.key(),
-                        extractFilename(s3Object.key()),
-                        s3Object.size(),
-                        s3Object.lastModified(),
-                        generateUrl(s3Object.key())
-                ))
+                .map(s3Object -> {
+                    // Try to get metadata for upload time
+                    Instant uploadedAt = imageMetadataRepository.findAll().stream()
+                            .filter(metadata -> metadata.getS3Key().equals(s3Object.key()))
+                            .map(metadata -> metadata.getUploadedAt().atZone(java.time.ZoneId.systemDefault()).toInstant())
+                            .findFirst()
+                            .orElse(s3Object.lastModified()); // fallback to lastModified if metadata not found
+
+                    return new S3Object(
+                            s3Object.key(),
+                            extractFilename(s3Object.key()),
+                            s3Object.size(),
+                            s3Object.lastModified(),
+                            uploadedAt,
+                            generateUrl(s3Object.key())
+                    );
+                })
                 .collect(Collectors.toList());
     }
 

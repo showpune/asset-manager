@@ -14,5 +14,6 @@ public class S3Object {
     private String name;
     private long size;
     private Instant lastModified;
+    private Instant uploadedAt;
     private String url;
 }
