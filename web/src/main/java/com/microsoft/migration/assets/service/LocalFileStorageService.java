@@ -1,7 +1,7 @@
 package com.microsoft.migration.assets.service;
 
 import com.microsoft.migration.assets.model.ImageProcessingMessage;
-import com.microsoft.migration.assets.model.S3Object;
+import com.microsoft.migration.assets.model.S3StorageItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,7 +15,6 @@ import jakarta.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +51,7 @@ public class LocalFileStorageService implements StorageService {
     }
 
     @Override
-    public List<S3Object> listObjects() {
+    public List<S3StorageItem> listObjects() {
         try {
             return Files.walk(rootLocation, 1)
                 .filter(path -> !path.equals(rootLocation))
@@ -60,7 +59,7 @@ public class LocalFileStorageService implements StorageService {
                     try {
                         String filename = path.getFileName().toString();
                         BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-                        return new S3Object(
+                        return new S3StorageItem(
                             filename,
                             filename,
                             Files.size(path),
@@ -72,7 +71,7 @@ public class LocalFileStorageService implements StorageService {
                         return null;
                     }
                 })
-                .filter(s3Object -> s3Object != null)
+                .filter(s3StorageItem -> s3StorageItem != null)
                 .collect(Collectors.toList());
         } catch (IOException e) {
             logger.error("Failed to list files", e);
