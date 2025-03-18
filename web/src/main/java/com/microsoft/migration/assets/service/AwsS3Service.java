@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.microsoft.migration.assets.config.RabbitConfig.QUEUE_NAME;
+import static com.microsoft.migration.assets.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +75,7 @@ public class AwsS3Service implements StorageService {
             getStorageType(),
             file.getSize()
         );
-        serviceBusTemplate.send(QUEUE_NAME, MessageBuilder.withPayload(message).build());
+        serviceBusTemplate.send(IMAGE_PROCESSING_QUEUE, MessageBuilder.withPayload(message).build());
 
         // Create and save metadata to database
         ImageMetadata metadata = new ImageMetadata();

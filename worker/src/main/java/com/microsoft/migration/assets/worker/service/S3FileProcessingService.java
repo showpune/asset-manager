@@ -1,8 +1,6 @@
 package com.microsoft.migration.assets.worker.service;
 
-import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobServiceClient;
-import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import com.microsoft.migration.assets.worker.model.ImageMetadata;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 @Profile("!dev")
@@ -41,11 +40,15 @@ public class S3FileProcessingService extends AbstractFileProcessingService {
         BlobParallelUploadOptions options = new BlobParallelUploadOptions(Files.newInputStream(source)).setHeaders(headers);
         blobClient.uploadWithResponse(options, null, null);
         
-        // Save or update thumbnail metadata
-        ImageMetadata metadata = imageMetadataRepository.findById(extractOriginalKey(key))
+        // The key parameter is already the thumbnail key, so extract the original key
+        String originalKey = extractOriginalKey(key);
+        
+        // Find metadata by S3 key instead of using it as ID
+        ImageMetadata metadata = imageMetadataRepository.findByS3Key(originalKey)
             .orElseGet(() -> {
                 ImageMetadata newMetadata = new ImageMetadata();
-                newMetadata.setId(extractOriginalKey(key));
+                newMetadata.setId(UUID.randomUUID().toString()); // Generate new UUID for ID
+                newMetadata.setS3Key(originalKey);
                 return newMetadata;
             });
 

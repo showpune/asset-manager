@@ -20,48 +20,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.microsoft.migration.assets.worker.config.RabbitConfig.QUEUE_NAME;
+import static com.microsoft.migration.assets.worker.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
 
 @Slf4j
 public abstract class AbstractFileProcessingService implements FileProcessor {
 
-    @Autowired
-    private RetryTemplate retryTemplate;
-
-    @ServiceBusListener(destination = QUEUE_NAME)
+    @ServiceBusListener(destination = IMAGE_PROCESSING_QUEUE)
     public void processImage(final ImageProcessingMessage message, 
-                           @Header(ServiceBusMessageHeaders.RECEIVED_MESSAGE_CONTEXT) ServiceBusReceivedMessageContext context) {
-        try {
-            retryTemplate.execute(new RetryCallback<Void, Exception>() {
-                @Override
-                public Void doWithRetry(RetryContext retryContext) throws Exception {
-                    if (retryContext.getRetryCount() > 0) {
-                        log.info("Retry attempt {} for image: {}", retryContext.getRetryCount(), message.getKey());
-                    }
-                    
-                    processImageWithRetry(message);
-                    return null;
-                }
-            });
-            
-            // Success - acknowledge the message
-            log.debug("Acknowledging message after successful processing: {}", message.getKey());
-            context.complete();
-        } catch (Exception e) {
-            log.error("All retry attempts failed for image: " + message.getKey(), e);
-            
-            try {
-                // After all retries are exhausted, reject the message
-                // to retry later, use abandon
-                log.debug("Rejecting message after all retry attempts failed: {}", message.getKey());
-                context.abandon();
-            } catch (Exception ackEx) {
-                log.error("Error handling Azure Service Bus acknowledgment for: {}", message.getKey(), ackEx);
-            }
-        }
-    }
-    
-    private void processImageWithRetry(ImageProcessingMessage message) {
+                            @Header(ServiceBusMessageHeaders.RECEIVED_MESSAGE_CONTEXT) ServiceBusReceivedMessageContext context) {
+        boolean processingSuccess = false;
         Path tempDir = null;
         Path originalFile = null;
         Path thumbnailFile = null;
@@ -86,13 +53,17 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 uploadThumbnail(thumbnailFile, thumbnailKey, message.getContentType());
 
                 log.info("Successfully processed image: {}", message.getKey());
+
+                // Mark processing as successful
+                processingSuccess = true;
             } else {
                 log.debug("Skipping message with storage type: {} (we handle {})",
                     message.getStorageType(), getStorageType());
+                // This is not an error, just not for this service, so we can acknowledge
+                processingSuccess = true;
             }
         } catch (Exception e) {
             log.error("Failed to process image: " + message.getKey(), e);
-            throw new RuntimeException("Failed to process image: " + message.getKey(), e);
         } finally {
             try {
                 // Cleanup temporary files
@@ -105,8 +76,19 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 if (tempDir != null) {
                     Files.deleteIfExists(tempDir);
                 }
+
+                if (processingSuccess) {
+                    // Acknowledge the message if processing was successful
+                    context.complete();
+                    log.debug("Message complete for: {}", message.getKey());
+                } else {
+                    // Reject the message with requeue=false to trigger dead letter exchange
+                    // This will route the message to the retry queue with delay
+                    context.deadLetter();
+                    log.debug("Message rejected and sent to dead letter queue for delayed retry: {}", message.getKey());
+                }
             } catch (IOException e) {
-                log.error("Error cleaning up temporary files for: {}", message.getKey(), e);
+                log.error("Error handling Service Bus acknowledgment for: {}", message.getKey(), e);
             }
         }
     }
