@@ -12,23 +12,25 @@ public class DBConnection {
     public static Connection getConnection() throws SQLException {
         
         Properties properties = new Properties();
-        try (InputStream input = DBConnection.class.getClassLoader().getResourceAsStream("application.properties")) {
+        try (InputStream input = MainPG.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input == null) {
                 System.out.println("Sorry, unable to find application.properties");
-                return null;
+                return;
             }
             // Load the properties file
             properties.load(input);
         } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
+            return;
         }
 
         String connString = properties.getProperty("AZURE_PGSQL_CONNECTIONSTRING");
         String user = properties.getProperty("AZURE_PGSQL_USER");
+        String password = properties.getProperty("AZURE_PGSQL_PASSWORD");
         
-        connString = connString + "&user=" + user + "&authenticationPluginClassName=com.azure.identity.extensions.jdbc.postgresql.AzurePostgresqlAuthenticationPlugin&azure.scopes=https://ossrdbms-aad.database.chinacloudapi.cn/.default";
+        connString = connString + "&user=" + user + "&password=" + password;
         Connection connection = DriverManager.getConnection(connString);
+        
         return connection;
 
     }
